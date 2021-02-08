@@ -1,10 +1,15 @@
+//import 'dart:js_util';
+
 import 'package:flutter/material.dart';
+import 'models/profile.dart';
+import 'mocks/mock_profile.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  final Profile p = MockProfile.fetch();
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -27,12 +32,16 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: ProfilePage(),
+      home: ProfilePage(p),
     );
   }
 }
 
 class ProfilePage extends StatelessWidget {
+  final Profile profile;
+
+  ProfilePage(this.profile);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,7 +70,7 @@ class ProfilePage extends StatelessWidget {
                 width: double.infinity,
                 height: 250,
                 child: Image.network(
-                  "https://pbs.twimg.com/profile_images/1246394388277858304/SfitsPi8_400x400.jpg",
+                  profile.imageUrl,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -73,7 +82,7 @@ class ProfilePage extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        "Paula Muñoz Lago",
+                        profile.name,
                         style: TextStyle(fontSize: 30),
                       ),
                     )
@@ -98,8 +107,8 @@ class ProfilePage extends StatelessWidget {
               Divider(
                 color: Colors.grey,
               ),
-              mobilePhoneListTile(),
-              mobilePhoneListTile(),
+              mobilePhoneListTile(0),
+              mobilePhoneListTile(1),
               emailListTile(),
               addressListTile()
             ],
@@ -169,14 +178,16 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget mobilePhoneListTile() {
+  Widget mobilePhoneListTile(int index) {
     return ListTile(
       leading: Icon(Icons.call),
-      title: Text("+34 6XXXXXXXX"),
+      title: Text(profile.phoneNumbers[index]),
       subtitle: Text("mobile"),
       trailing: IconButton(
         icon: Icon(Icons.message),
-        onPressed: () {},
+        onPressed: () {
+          print(profile.phoneNumbers);
+        },
       ),
     );
   }
@@ -184,18 +195,20 @@ class ProfilePage extends StatelessWidget {
   Widget emailListTile() {
     return ListTile(
         leading: Icon(Icons.email),
-        title: Text("paulamunozlago@gmail.com"),
+        title: Text(profile.email),
         subtitle: Text("personal"));
   }
 
   Widget addressListTile() {
     return ListTile(
       leading: Icon(Icons.location_pin),
-      title: Text("Madrid"),
-      subtitle: Text("Spain"),
+      title: Text(profile.location[0]),
+      subtitle: Text(profile.location[1]),
       trailing: IconButton(
         icon: Icon(Icons.directions),
-        onPressed: () {},
+        onPressed: () {
+          print(profile.location);
+        },
       ),
     );
   }
